@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Y</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+
+<div class="container flex flex-col min-h-screen mx-auto p-4">
+
+    <div class="sticky top-0 z-10">
+        {% include 'components/default/header.html' %}
+    </div>
+
+    <div class="flex-1 overflow-y-auto">
+        <main>
+            {% block main %}
+            {% endblock main %}
+        </main>
+    </div>
+
+    <div class="bottom-0 z-10">
+        {% include 'components/default/footer.html' %}
+    </div>
+
+</div>
+
+
+</body>
+</html>
