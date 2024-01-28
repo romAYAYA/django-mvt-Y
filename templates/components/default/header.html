@@ -1,12 +1,21 @@
-<header class="bg-white p-4 border-b flex justify-between items-center">
-    <h1 class="text-2xl font-bold mr-4">Y</h1>
+{% load static %}
 
-    <nav>
+<header class="bg-white p-4 border-b flex justify-between items-center">
+    <h1 class="text-2xl font-bold mr-4 hidden md:block"><a href="/">Y</a></h1>
+
+    <nav class="flex items-center space-x-4">
         <ul class="flex space-x-4">
-            <li><a href="#" class="text-blue-500 hover:underline">Home</a></li>
+            <li><a href="/" class="text-blue-500 hover:underline">Home</a></li>
             <li><a href="#" class="text-blue-500 hover:underline">About</a></li>
             <li><a href="#" class="text-blue-500 hover:underline">Contact</a></li>
         </ul>
-        <a href="{% url 'register' %}">Register</a>
+
+        {% if not request.user.is_authenticated %}
+        <a href="{% url 'register' %}" class="text-blue-500 hover:underline ml-4">Register</a>
+        {% else %}
+        <a href="{% url 'logout' %}" class="text-red-500 hover:underline ml-4">Logout</a>
+
+        <img src="{% static request.user.profile.avatar.url %}" alt="Avatar" class="object-cover rounded-full h-20 w-20  ml-2">
+        {% endif %}
     </nav>
 </header>

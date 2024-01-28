@@ -1,9 +1,8 @@
 import re
 
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth import login
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django_app.models import Profile
@@ -37,8 +36,36 @@ def register_profile(request):
 
 
 def login_profile(request):
-    pass
+    if request.method == "GET":
+        return render(request, "pages/Login.html")
+
+    elif request.method == "POST":
+        username = str(request.POST["username"])
+        password = str(request.POST["password"])
+
+        user = authenticate(username=username, password=password)
+
+        if user is None:
+            error_message = "Username or password is incorrect"
+            return render(request, "pages/Login.html", {"error": error_message})
+
+        login(request, user)
+        return redirect(reverse("home"))
 
 
-def logout(request):
-    pass
+def logout_profile(request):
+    logout(request)
+    return redirect(reverse("login"))
+
+
+
+
+
+
+
+
+
+
+
+
+
