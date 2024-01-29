@@ -1,0 +1,25 @@
+{% extends 'components/default/baseLayout.html' %}
+
+{% load static %}
+
+{% block main %}
+<div class="flex">
+
+    <div class="w-1/4 p-4 border-r">
+        <h2 class="text-2xl font-bold mb-4">Rooms</h2>
+        <ul>
+            {% for room in rooms %}
+                <li class="mb-4 flex items-center">
+                    <p class="text-blue-500 hover:underline">{{ room.name }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="w-3/4 p-4">
+        <h2 class="text-2xl font-bold mb-4">Chat</h2>
+        {% block chat %}
+        {% endblock chat %}
+    </div>
+</div>
+{% endblock %}

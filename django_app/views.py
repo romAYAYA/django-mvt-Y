@@ -3,16 +3,17 @@ import re
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
+from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django_app.models import Profile
+from django_app.models import Profile, Room, Message
 
 
-def render_home(request):
+def render_home(request: HttpRequest):
     return render(request, "pages/Home.html")
 
 
-def register_profile(request):
+def register_profile(request: HttpRequest):
     if request.method == "GET":
         return render(request, "pages/Register.html")
 
@@ -35,7 +36,7 @@ def register_profile(request):
         return redirect(reverse("home"))
 
 
-def login_profile(request):
+def login_profile(request: HttpRequest):
     if request.method == "GET":
         return render(request, "pages/Login.html")
 
@@ -53,19 +54,20 @@ def login_profile(request):
         return redirect(reverse("home"))
 
 
-def logout_profile(request):
+def logout_profile(request: HttpRequest):
     logout(request)
     return redirect(reverse("login"))
 
 
+def render_chats(request: HttpRequest):
+    rooms = Room.objects.all()
+    return render(request, "pages/ChatsList.html", {"rooms": rooms})
 
 
-
-
-
-
-
-
-
-
-
+def render_room(request: HttpRequest, room_slug: str):
+    rooms = Room.objects.all()
+    room = Room.objects.get(slug=room_slug)
+    messages = Message.objects.filter(room=room)[:30][::-1]
+    return render(
+        request, "components/chatComponent.html", {"messages": messages, "room": room, "rooms": rooms}
+    )
