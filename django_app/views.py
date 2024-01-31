@@ -6,11 +6,12 @@ from django.contrib.auth.models import User
 from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django_app.models import Profile, Room, Message
+from django_app.models import Profile, Room, Message, Post
 
 
 def render_home(request: HttpRequest):
-    return render(request, "pages/Home.html")
+    posts = Post.objects.all()
+    return render(request, "pages/Home.html", {"posts": posts})
 
 
 def register_profile(request: HttpRequest):
@@ -69,5 +70,35 @@ def render_room(request: HttpRequest, room_slug: str):
     room = Room.objects.get(slug=room_slug)
     messages = Message.objects.filter(room=room)[:30][::-1]
     return render(
-        request, "components/chatComponent.html", {"messages": messages, "room": room, "rooms": rooms}
+        request,
+        "components/chatComponent.html",
+        {"messages": messages, "room": room, "rooms": rooms},
     )
+
+
+def create_post(request: HttpRequest):
+    if request.method == "POST":
+        title = str(request.POST["title"])
+        content = str(request.POST["content"])
+        image = request.FILES.get("image", None)
+
+        Post.objects.create(author=request.user, title=title, content=content, image=image)
+
+        return redirect(reverse("home"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

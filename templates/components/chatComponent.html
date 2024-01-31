@@ -7,7 +7,7 @@
 
         <div id="chat-messages" class="messages-container w-full max-h-96 overflow-y-auto">
             {% for message in messages %}
-            <p class="font-semibold"> {{message.user.username}}</p>
+            <p class="font-semibold"> {{message.user.username}} [{{message.timestamp}}]</p>
             <p> {{ message.content }} </p>
             {% endfor %}
         </div>

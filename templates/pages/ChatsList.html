@@ -9,9 +9,9 @@
         <h2 class="text-2xl font-bold mb-4">Rooms</h2>
         <ul>
             {% for room in rooms %}
-                <li class="mb-4 flex items-center">
-                    <p class="text-blue-500 hover:underline">{{ room.name }}</p>
-                </li>
+            <li class="mb-4 flex items-center">
+                <a href="{% url 'room' room.slug %}" class="text-blue-500 hover:underline">{{ room.name }}</a>
+            </li>
             {% endfor %}
         </ul>
     </div>

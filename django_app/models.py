@@ -114,7 +114,6 @@ class Message(models.Model):
         editable=True,
         blank=True,
         null=False,
-        max_length=300,
         auto_now_add=True,
     )
 
@@ -124,3 +123,67 @@ class Message(models.Model):
 
     def __str__(self):
         return f"<Message {self.room.name} {self.content[:30]} ({self.id})/>"
+
+
+class Post(models.Model):
+    author = models.ForeignKey(
+        verbose_name="Post author",
+        db_index=True,
+        primary_key=False,
+        editable=False,
+        blank=True,
+        null=False,
+        default=None,
+        max_length=100,
+        #
+        to=User,
+        on_delete=models.CASCADE,
+    )
+    title = models.CharField(
+        verbose_name="Post title",
+        db_index=True,
+        primary_key=False,
+        unique=False,
+        editable=True,
+        blank=True,
+        null=False,
+        default="",
+        max_length=300,
+    )
+    content = models.TextField(
+        verbose_name="Post text",
+        db_index=False,
+        primary_key=False,
+        unique=False,
+        editable=True,
+        blank=True,
+        null=False,
+        default="",
+    )
+    timestamp = models.DateTimeField(
+        verbose_name="Timestamp",
+        db_index=True,
+        primary_key=False,
+        unique=False,
+        editable=True,
+        blank=True,
+        null=False,
+        auto_now_add=True,
+    )
+    image = models.ImageField(
+        verbose_name="Post image",
+        validators=[FileExtensionValidator(["jpg", "png", "jpeg"])],
+        unique=False,
+        editable=True,
+        blank=True,
+        null=True,
+        default=None,
+        upload_to="posts/images",
+    )
+
+    class Meta:
+        app_label = "django_app"
+        ordering = ("-timestamp", "-content")
+
+    def __str__(self):
+        return f"<Post {self.title} {self.content[:30]} ({self.id})/>"
