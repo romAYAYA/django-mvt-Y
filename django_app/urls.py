@@ -9,7 +9,8 @@ urlpatterns = [
     path("logout/", views.logout_profile, name="logout"),
     path("chat/", views.render_chats, name="chat"),
     path("chat/<slug:room_slug>/", views.render_room, name="room"),
-    path("create_post/", views.create_post, name="create_post")
+    path("create_post/", views.create_post, name="create_post"),
+    path("post/<str:post_id>/rating/<str:is_liked>", views.rate_post, name="rate_post"),
 ]
 
 websocket_urlpatterns = [path("ws/chat/<slug:room_name>/", ChatConsumer.as_asgi())]

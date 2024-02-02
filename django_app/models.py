@@ -187,3 +187,49 @@ class Post(models.Model):
 
     def __str__(self):
         return f"<Post {self.title} {self.content[:30]} ({self.id})/>"
+
+
+class PostRating(models.Model):
+    author = models.ForeignKey(
+        verbose_name="Author",
+        db_index=True,
+        primary_key=False,
+        editable=True,
+        blank=True,
+        null=False,
+        default="",
+        max_length=100,
+        #
+        to=User,
+        on_delete=models.CASCADE,
+    )
+    post = models.ForeignKey(
+        verbose_name="Post",
+        db_index=True,
+        primary_key=False,
+        editable=True,
+        blank=True,
+        null=False,
+        default="",
+        max_length=100,
+        #
+        to=Post,
+        on_delete=models.CASCADE,
+    )
+    is_liked = models.BooleanField(
+        verbose_name="Liked or not",
+        db_index=True,
+        primary_key=False,
+        unique=False,
+        editable=True,
+        blank=True,
+        null=False,
+        default=True,
+    )
+
+    class Meta:
+        app_label = "django_app"
+        ordering = ("-post", "-author")
+
+    def __str__(self):
+        return f"PostRating {self.post.title}({self.id}) | {self.is_liked}"

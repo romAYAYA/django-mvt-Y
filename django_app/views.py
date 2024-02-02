@@ -6,12 +6,19 @@ from django.contrib.auth.models import User
 from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django_app.models import Profile, Room, Message, Post
+from django_app.models import Profile, Room, Message, Post, PostRating
 
 
 def render_home(request: HttpRequest):
     posts = Post.objects.all()
-    return render(request, "pages/Home.html", {"posts": posts})
+
+    return render(
+        request,
+        "pages/Home.html",
+        {
+            "posts": posts,
+        },
+    )
 
 
 def register_profile(request: HttpRequest):
@@ -82,23 +89,29 @@ def create_post(request: HttpRequest):
         content = str(request.POST["content"])
         image = request.FILES.get("image", None)
 
-        Post.objects.create(author=request.user, title=title, content=content, image=image)
+        Post.objects.create(
+            author=request.user, title=title, content=content, image=image
+        )
 
         return redirect(reverse("home"))
 
 
+def rate_post(request: HttpRequest, post_id: str, is_liked: str):
+    author = request.user
+    post = Post.objects.get(id=int(post_id))
+    is_liked = True if is_liked == "1" else False
 
+    try:
+        liked_post = PostRating.objects.get(author=author, post=post)
+        if liked_post.is_liked and is_liked:
+            liked_post.delete()
+        elif not liked_post.is_liked and not is_liked:
+            liked_post.delete()
+        else:
+            liked_post.is_liked = is_liked
+            liked_post.save()
 
+    except Exception as _:
+        PostRating.objects.create(author=author, post=post, is_liked=is_liked)
 
-
-
-
-
-
-
-
-
-
-
-
-
+    return redirect(reverse("home"))
