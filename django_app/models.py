@@ -233,3 +233,39 @@ class PostRating(models.Model):
 
     def __str__(self):
         return f"PostRating {self.post.title}({self.id}) | {self.is_liked}"
+
+
+class PostComplain(models.Model):
+    author = models.ForeignKey(
+        verbose_name="Author",
+        db_index=True,
+        primary_key=False,
+        editable=True,
+        blank=True,
+        null=False,
+        default="",
+        max_length=100,
+        #
+        to=User,
+        on_delete=models.CASCADE,
+    )
+    post = models.ForeignKey(
+        verbose_name="Post",
+        db_index=True,
+        primary_key=False,
+        editable=True,
+        blank=True,
+        null=False,
+        default="",
+        max_length=100,
+        #
+        to=Post,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        app_label = "django_app"
+        ordering = ("-post", "-author")
+
+    def __str__(self):
+        return f"<PostComplain {self.post.title}({self.id})/>"

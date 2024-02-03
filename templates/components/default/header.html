@@ -8,6 +8,9 @@
             <li><a href="/" class="text-blue-500 hover:underline">Home</a></li>
             <li><a href="{% url 'chat' %}" class="text-blue-500 hover:underline">Chats</a></li>
             <li><a href="#" class="text-blue-500 hover:underline">Contact</a></li>
+            {% if user.is_staff %}
+            <li><a href="{% url 'complains' %}" class="text-blue-500 hover:underline">Complains</a></li>
+            {% endif %}
         </ul>
 
         {% if not request.user.is_authenticated %}
@@ -15,7 +18,8 @@
         {% else %}
         <a href="{% url 'logout' %}" class="text-red-500 hover:underline ml-4">Logout</a>
 
-        <img src="{% static request.user.profile.avatar.url %}" alt="Avatar" class="object-cover rounded-full h-20 w-20  ml-2">
+        <img src="{% static request.user.profile.avatar.url %}" alt="Avatar"
+             class="object-cover rounded-full h-20 w-20  ml-2">
         {% endif %}
     </nav>
 </header>

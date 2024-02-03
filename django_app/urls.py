@@ -11,6 +11,9 @@ urlpatterns = [
     path("chat/<slug:room_slug>/", views.render_room, name="room"),
     path("create_post/", views.create_post, name="create_post"),
     path("post/<str:post_id>/rating/<str:is_liked>", views.rate_post, name="rate_post"),
+    path("post/edit/<str:post_id>", views.edit_post, name="edit_post"),
+    path("post/complain/<str:post_id>", views.report_post, name="report_post"),
+    path("complains/", views.render_complains, name="complains")
 ]
 
 websocket_urlpatterns = [path("ws/chat/<slug:room_name>/", ChatConsumer.as_asgi())]

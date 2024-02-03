@@ -1,0 +1,34 @@
+{% extends 'components/default/baseLayout.html' %}
+{% load static %}
+{% load tags %}
+
+{% block main %}
+<div class="container mx-auto mt-10">
+    <h1 class="text-4xl font-bold mb-6">Complains</h1>
+
+
+    {% for post in complains %}
+    <div class="flex items-center p-5 w-full bg-white">
+        <div class="border-t border-b pt-16 grid grid-cols-2 gap-8">
+            <div class="flex flex-col justify-start">
+                <div class="flex flex-col w-full object-cover h-4/6 justify-items-start border rounded-lg overflow-hidden"
+                     style="min-height: 320px">
+                    <img class="w-full h-full object-cover"
+                         src="{% static post.post.image.url %}"
+                         alt='{{ post.title }}'>
+                </div>
+            </div>
+            <div class="flex flex-col">
+                <div class="flex flex-col gap-4">
+                    <h1 class="capitalize text-4xl font-extrabold">{{ post.post.title }}</h1>
+                    <h2 class="text-3xl">{{ post.post.timestamp }}</h2>
+                    <p class="text-lg text-gray-500">{{ post.post.content }}</p>
+                    <p>Post author: {{post.post.author}}</p>
+                    <p>Report author: {{post.author}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+{% endblock %}

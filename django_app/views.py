@@ -6,18 +6,31 @@ from django.contrib.auth.models import User
 from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django_app.models import Profile, Room, Message, Post, PostRating
+from django_app.models import Profile, Room, Message, Post, PostRating, PostComplain
+from django.core.paginator import Paginator
 
 
 def render_home(request: HttpRequest):
+    sort = request.GET.get("sort", "desc")
+
     posts = Post.objects.all()
+
+    match sort:
+        case "date_asc":
+            posts = posts.order_by("timestamp", "title")
+        case "date_desc":
+            posts = posts.order_by("-timestamp", "title")
+        case _:
+            posts = posts.order_by("title")
+
+    selected_page = request.GET.get(key="page", default=1)
+    pages = Paginator(object_list=posts, per_page=4)
+    page = pages.page(number=selected_page)
 
     return render(
         request,
         "pages/Home.html",
-        {
-            "posts": posts,
-        },
+        {"posts": page.object_list, "sort": sort, "page": page},
     )
 
 
@@ -115,3 +128,43 @@ def rate_post(request: HttpRequest, post_id: str, is_liked: str):
         PostRating.objects.create(author=author, post=post, is_liked=is_liked)
 
     return redirect(reverse("home"))
+
+
+def edit_post(request: HttpRequest, post_id: str):
+    if request.method == "GET":
+        post = Post.objects.get(id=int(post_id))
+        return render(request, "pages/EditPost.html", {"post": post})
+
+    elif request.method == "POST":
+        title = str(request.POST.get("title"))
+        content = str(request.POST.get("content"))
+        image = request.FILES.get("image", None)
+
+        post = Post.objects.get(id=int(post_id))
+        if post.title != title:
+            post.title = title
+        if post.content != content:
+            post.content = content
+        if image:
+            post.image = image
+
+        post.save()
+
+        return redirect(reverse("home"))
+
+
+def report_post(request: HttpRequest, post_id: str):
+    post = Post.objects.get(id=int(post_id))
+    author = request.user
+
+    try:
+        PostComplain.objects.get(author=author, post=post)
+    except Exception as _:
+        PostComplain.objects.create(author=author, post=post)
+
+    return redirect(reverse("home"))
+
+
+def render_complains(request: HttpRequest):
+    complains = PostComplain.objects.all()
+    return render(request, "pages/Complains.html", {"complains": complains})
